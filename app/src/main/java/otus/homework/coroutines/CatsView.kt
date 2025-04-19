@@ -8,13 +8,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.squareup.picasso.Picasso
+import otus.homework.coroutines.models.CatsViewModel
 
 class CatsView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr), ICatsView {
-    var presenter: CatsPresenter? = null
+    var presenter: CatsViewModel? = null
 
     override fun onFinishInflate() {
         super.onFinishInflate()

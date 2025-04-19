@@ -1,15 +1,16 @@
 package otus.homework.coroutines
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.squareup.picasso.Picasso
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import otus.homework.coroutines.models.CatsViewModel
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var catsPresenter: CatsPresenter
-
-    private val diContainer = DiContainer()
+    private val catsViewModel: CatsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,17 +18,41 @@ class MainActivity : AppCompatActivity() {
         val view = layoutInflater.inflate(R.layout.activity_main, null) as CatsView
         setContentView(view)
 
-        catsPresenter = CatsPresenter(diContainer.service)
-        view.presenter = catsPresenter
-        catsPresenter.attachView(view)
-        catsPresenter.onInitComplete()
+        view.presenter = catsViewModel
+        onFactStateSuccess(view)
+        onFactStateError(view)
+        onImageUrlFactSuccess(view)
+        catsViewModel.onInitComplete()
+    }
+
+    private fun onFactStateSuccess(view: CatsView) {
+        lifecycleScope.launch {
+            catsViewModel.factState.collect { result ->
+                view.populate(result.fact)
+            }
+        }
+    }
+
+    private fun onImageUrlFactSuccess(view: CatsView) {
+        lifecycleScope.launch {
+            catsViewModel.imageCatUrl.collect { url ->
+                if (url.isNotEmpty()) {
+                    view.setImageOnFact(url)
+                }
+            }
+        }
+    }
+
+    private fun onFactStateError(view: CatsView) {
+        lifecycleScope.launch {
+            catsViewModel.factErrorState.collect { error ->
+                view.showToast(error.message)
+            }
+        }
     }
 
     override fun onStop() {
-        if (isFinishing) {
-            catsPresenter.detachView()
-        }
-        catsPresenter.presenterScope.cancel()
+        lifecycleScope.cancel()
         super.onStop()
     }
 }
