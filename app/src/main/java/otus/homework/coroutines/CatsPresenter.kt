@@ -9,29 +9,57 @@ import java.net.SocketTimeoutException
 class CatsPresenter(
     private val catsService: CatsService
 ) {
-     val presenterScope = CoroutineScope(Dispatchers.Main + CoroutineName("CatsCoroutine"))
+    val presenterScope = CoroutineScope(Dispatchers.Main + CoroutineName("CatsCoroutine"))
     private var _catsView: ICatsView? = null
 
     fun onInitComplete() {
-
         presenterScope.launch {
-            try {
-                val response = catsService.getCatFact()
+            getRandomCatPicture()
+            getRandomFact()
+        }
+    }
 
-                if (response.isSuccessful) {
-                    response.body()?.let { fact ->
-                        _catsView?.populate(fact)
+    private suspend fun getRandomFact() {
+        try {
+            val response = catsService.getCatFact()
+
+            if (response.isSuccessful) {
+                response.body()?.let { fact ->
+                    _catsView?.populate(fact)
+                }
+            }
+
+        } catch (e: Exception) {
+            when (e) {
+                is SocketTimeoutException -> _catsView?.showToast("Не удалось получить ответ от сервером")
+                else -> {
+                    CrashMonitor.trackWarning(e)
+                    e.message?.let { message ->
+                        _catsView?.showToast(message)
                     }
                 }
+            }
+        }
+    }
 
-            } catch (e: Exception) {
-                when (e) {
-                    is SocketTimeoutException -> _catsView?.showToast("Не удалось получить ответ от сервером")
-                    else -> {
-                        CrashMonitor.trackWarning(e)
-                        e.message?.let { message ->
-                            _catsView?.showToast(message)
-                        }
+    private suspend fun getRandomCatPicture() {
+        val responseP = catsService.getCatPicture()
+        try {
+            if (responseP.isSuccessful) {
+                responseP.body()?.let { listCatImage ->
+                    listCatImage.firstOrNull()?.let {
+                        _catsView?.setImageOnFact(it.url)
+                    }
+                }
+            }
+
+        } catch (e: Exception) {
+            when (e) {
+                is SocketTimeoutException -> _catsView?.showToast("Не удалось получить ответ от сервером")
+                else -> {
+                    CrashMonitor.trackWarning(e)
+                    e.message?.let { message ->
+                        _catsView?.showToast(message)
                     }
                 }
             }

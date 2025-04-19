@@ -2,6 +2,7 @@ package otus.homework.coroutines
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.cancel
 
 class MainActivity : AppCompatActivity() {
