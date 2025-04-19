@@ -2,10 +2,11 @@ package otus.homework.coroutines
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import kotlinx.coroutines.cancel
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var catsPresenter: CatsPresenter
+    private lateinit var catsPresenter: CatsPresenter
 
     private val diContainer = DiContainer()
 
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         if (isFinishing) {
             catsPresenter.detachView()
         }
+        catsPresenter.presenterScope.cancel()
         super.onStop()
     }
 }
