@@ -5,11 +5,11 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import otus.homework.coroutines.CatsService
+import otus.homework.coroutines.server.CatsService
 import otus.homework.coroutines.CrashMonitor
-import otus.homework.coroutines.DiContainer
-import otus.homework.coroutines.Fact
-import otus.homework.coroutines.Result
+import otus.homework.coroutines.server.DiContainer
+import otus.homework.coroutines.data.Fact
+import otus.homework.coroutines.data.Result
 import java.net.SocketTimeoutException
 
 class CatsViewModel : ViewModel() {

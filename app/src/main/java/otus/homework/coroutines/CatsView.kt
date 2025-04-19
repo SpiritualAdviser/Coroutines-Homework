@@ -8,6 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.squareup.picasso.Picasso
+import otus.homework.coroutines.data.Fact
 import otus.homework.coroutines.models.CatsViewModel
 
 class CatsView @JvmOverloads constructor(

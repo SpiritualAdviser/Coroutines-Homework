@@ -1,9 +1,12 @@
-package otus.homework.coroutines
+package otus.homework.coroutines.models
 
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import otus.homework.coroutines.CrashMonitor
+import otus.homework.coroutines.ICatsView
+import otus.homework.coroutines.server.CatsService
 import java.net.SocketTimeoutException
 
 class CatsPresenter(
